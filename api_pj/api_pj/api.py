@@ -2,9 +2,9 @@ import json
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 import numpy as np
-import psycopg2
 
 from similarity import PearsonSim
+from dbconnect import DBConnect
 
 #閾値
 THETA = 0
@@ -16,18 +16,12 @@ def RecomApi(request):
         return JsonResponse({})
     
     #Connecting Database    
-    conn = psycopg2.connect(
-
-        )
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM post;')
-    data = cur.fetchall()
+    data = DBConnect()
     DB_data = np.array([list(data[i][:-3]) for i in range(len(data))])
 
     # JSON文字列を受け取り、numpy arrayに格納する
     data_json = json.loads(request.body)
-    data = np.array([data_json['id'],
-                    data_json['name'],
+    data = np.array([
                     data_json['hackathon'],
                     data_json['team'],
                     data_json['frontend'],
@@ -38,7 +32,8 @@ def RecomApi(request):
                     data_json['movie'],
                     data_json['machinelearning'],
                     data_json['portfolio'],
-                    data_json['presentation']])
+                    data_json['presentation']
+                    ])
     
     #DB_dataとdatasをくっつける
     DATA = np.vstack([DB_data, data])
@@ -65,7 +60,7 @@ def RecomApi(request):
     PuDu_sim = np.array([PearsonSim(post_usr_index,u) for u in usr_index if u != post_usr_index])
 
     #-----------------類似ユーザーの選定---------------#
-    #PuDu_simを辞書型にする
+    #PuDu_simを辞書型にする (PuDu:PostされたUserとデータベースのUserの類似度）
     PuDu_sim_dict = {
         u : PuDu_sim[u] for u in range(len(PuDu_sim))
     }
