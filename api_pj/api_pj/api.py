@@ -1,6 +1,5 @@
 import json
 from django.http.response import JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
 import numpy as np
 
 from similarity import PearsonSim
@@ -9,7 +8,6 @@ from dbconnect import DBConnect
 #閾値
 #THETA = 0
 
-@ensure_csrf_cookie
 def RecomApi(request):
 
     if request.method == 'GET':
@@ -76,13 +74,13 @@ def RecomApi(request):
     #        if PuDu_sim_dict_sorted[i] > THETA
     #}
 
-    #-------------推薦結果を上位一つだけ返す場合----------#
+    #-------------推薦結果（投稿ID）をソートして返す----------#
 
-    #推薦結果の投稿インデックスを取得
+    #類似度の高い順にpostテーブルデータの行数をソート
     recom_res_index = list(PuDu_sim_dict_sorted)
 
-    #推薦結果の投稿idを取得
-    recom_res_id = DB_data[recom_res_index,0]
+    #postテーブルデータからrecom_res_index順に、0列目の投稿idを取得してJSON形式にするためにリストに変換する
+    recom_res_id = list(DB_data[recom_res_index,0])
 
     #JSON形式で書き換える
     ret = {"recom_res": recom_res_id}
