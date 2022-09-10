@@ -7,7 +7,7 @@ from similarity import PearsonSim
 from dbconnect import DBConnect
 
 #閾値
-THETA = 0
+#THETA = 0
 
 @ensure_csrf_cookie
 def RecomApi(request):
@@ -18,6 +18,9 @@ def RecomApi(request):
     #Connecting Database    
     data = DBConnect()
     DB_data = np.array([list(data[i][:-3]) for i in range(len(data))])
+
+    # データベースから受け取ったデータのうちidと名前以外を取り出す。
+    DB_without_idname = DB_data[:,2:]
 
     # JSON文字列を受け取り、numpy arrayに格納する
     data_json = json.loads(request.body)
@@ -36,7 +39,7 @@ def RecomApi(request):
                     ])
     
     #DB_dataとdatasをくっつける
-    DATA = np.vstack([DB_data, data])
+    DATA = np.vstack([DB_without_idname, data])
 
     #診断内容だけ抽出
     usr_feat = DATA[:,2:].astype('float64')
@@ -57,7 +60,7 @@ def RecomApi(request):
     mean_usr_feat = usr_feat - usrs_mean.reshape((usrs_mean.size, 1))
 
     #POSTしたユーザとDBユーザーの類似度計算
-    PuDu_sim = np.array([PearsonSim(post_usr_index,u) for u in usr_index if u != post_usr_index])
+    PuDu_sim = np.array([PearsonSim(post_usr_index,u, mean_usr_feat) for u in usr_index if u != post_usr_index])
 
     #-----------------類似ユーザーの選定---------------#
     #PuDu_simを辞書型にする (PuDu:PostされたUserとデータベースのUserの類似度）
@@ -68,15 +71,15 @@ def RecomApi(request):
     PuDu_sim_dict_sorted = dict(sorted(PuDu_sim_dict.items(), key = lambda x : -x[1]))
 
     #PuDu_sim_dict_sortedの類似度が閾値以下のものを取り除く。
-    PuDu_sim_dict_otheta = {
-        i : PuDu_sim_dict_sorted[i] for i in PuDu_sim_dict_sorted.keys()\
-            if PuDu_sim_dict_sorted[i] > THETA
-    }
+    #PuDu_sim_dict_otheta = {
+    #    i : PuDu_sim_dict_sorted[i] for i in PuDu_sim_dict_sorted.keys()\
+    #        if PuDu_sim_dict_sorted[i] > THETA
+    #}
 
     #-------------推薦結果を上位一つだけ返す場合----------#
 
     #推薦結果の投稿インデックスを取得
-    recom_res_index = list(PuDu_sim_dict_otheta)[0]
+    recom_res_index = list(PuDu_sim_dict_sorted)
 
     #推薦結果の投稿idを取得
     recom_res_id = DB_data[recom_res_index,0]
