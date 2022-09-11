@@ -77,7 +77,7 @@ def RecomApi(request):
     #-------------推薦結果（投稿ID）をソートして返す----------#
 
     #類似度の高い順にpostテーブルデータの行数をソート
-    recom_res_index = list(PuDu_sim_dict_sorted)
+    recom_res_index = list(PuDu_sim_dict_sorted)[:(data_json['numres'])]
 
     #postテーブルデータからrecom_res_index順に、0列目の投稿idを取得してJSON形式にするためにリストに変換する
     recom_res_id = list(DB_data[recom_res_index,0])
