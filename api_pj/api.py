@@ -10,11 +10,11 @@ from . import dbconnect
 
 def RecomApi(request):
 
+    if request.method == 'GET':
+        return JsonResponse({})
     
     #Connecting Database    
     data = dbconnect.DBConnect()
-    if request.method == 'GET':
-        return JsonResponse({})
     DB_data = np.array([list(data[i][:-3]) for i in range(len(data))])
 
     # データベースから受け取ったデータのうちidと名前以外を取り出す。
