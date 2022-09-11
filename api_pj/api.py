@@ -10,11 +10,11 @@ from . import dbconnect
 
 def RecomApi(request):
 
+    if request.method == 'GET':
+        return JsonResponse({})
     
     #Connecting Database    
     data = dbconnect.DBConnect()
-    if request.method == 'POST':
-        return JsonResponse({})
     DB_data = np.array([list(data[i][:-3]) for i in range(len(data))])
 
     # データベースから受け取ったデータのうちidと名前以外を取り出す。
@@ -59,7 +59,7 @@ def RecomApi(request):
 
     #POSTしたユーザとDBユーザーの類似度計算
     PuDu_sim = np.array([similarity.PearsonSim(post_usr_index,u, mean_usr_feat) for u in usr_index if u != post_usr_index])
-
+    print('Calculated PearsonSimilarity')
     #-----------------類似ユーザーの選定---------------#
     #PuDu_simを辞書型にする (PuDu:PostされたUserとデータベースのUserの類似度）
     PuDu_sim_dict = {
@@ -77,7 +77,7 @@ def RecomApi(request):
     #-------------推薦結果（投稿ID）をソートして返す----------#
 
     #類似度の高い順にpostテーブルデータの行数をソート
-    recom_res_index = list(PuDu_sim_dict_sorted)[:(data_json['numres'])]
+    recom_res_index = list(PuDu_sim_dict_sorted)
 
     #postテーブルデータからrecom_res_index順に、0列目の投稿idを取得してJSON形式にするためにリストに変換する
     recom_res_id = list(DB_data[recom_res_index,0])
