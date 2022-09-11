@@ -1,5 +1,5 @@
 import psycopg2
-import key
+from . import key
 
 def DBConnect():
 
