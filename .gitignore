@@ -1,4 +1,5 @@
 __pycache__/
 my_env/
 api_pj/db.sqlite3
+.env
 key.py
