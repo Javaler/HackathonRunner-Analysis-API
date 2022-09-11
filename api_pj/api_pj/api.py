@@ -2,8 +2,8 @@ import json
 from django.http.response import JsonResponse
 import numpy as np
 
-from similarity import PearsonSim
-from dbconnect import DBConnect
+from . import similarity
+from . import dbconnect
 
 #閾値
 #THETA = 0
@@ -14,7 +14,7 @@ def RecomApi(request):
         return JsonResponse({})
     
     #Connecting Database    
-    data = DBConnect()
+    data = dbconnect.DBConnect()
     DB_data = np.array([list(data[i][:-3]) for i in range(len(data))])
 
     # データベースから受け取ったデータのうちidと名前以外を取り出す。
@@ -58,7 +58,7 @@ def RecomApi(request):
     mean_usr_feat = usr_feat - usrs_mean.reshape((usrs_mean.size, 1))
 
     #POSTしたユーザとDBユーザーの類似度計算
-    PuDu_sim = np.array([PearsonSim(post_usr_index,u, mean_usr_feat) for u in usr_index if u != post_usr_index])
+    PuDu_sim = np.array([similarity.PearsonSim(post_usr_index,u, mean_usr_feat) for u in usr_index if u != post_usr_index])
 
     #-----------------類似ユーザーの選定---------------#
     #PuDu_simを辞書型にする (PuDu:PostされたUserとデータベースのUserの類似度）
