@@ -4,10 +4,10 @@ import os
 def DBConnect():
 
     conn = psycopg2.connect(
-            host=os.environ['HOST'],
-            user=os.environ['USER'],
-            password=os.environ['PASSWORD'],
-            database=os.environ['DATABASE']
+            host=os.environ.get('HOST'),
+            user=os.environ.get('USER'),
+            password=os.environ.get('PASSWORD'),
+            database=os.environ.get('DATABASE')
         )
     
     cur = conn.cursor()
