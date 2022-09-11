@@ -2,8 +2,8 @@ import requests
 import json
  
 # URLを設定
-url = 'http://127.0.0.1:8000/hr-api/'
-
+url = 'https://hackathonrunner-analysis-api.herokuapp.com/hr-api/'
+#url = 'http://localhost:8000/hr-api/'
 # 送信データ
 prm = {
         'hackathon':        0,
@@ -16,7 +16,8 @@ prm = {
         'movie':            0,
         'machinelearning':  1,
         'portfolio':        2,
-        'presentation':     0
+        'presentation':     0,
+        'numres':           5
 }
  
 # JSON変換
