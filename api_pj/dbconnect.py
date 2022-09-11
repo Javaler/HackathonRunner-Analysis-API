@@ -1,13 +1,13 @@
 import psycopg2
-from . import key
+import os
 
 def DBConnect():
 
     conn = psycopg2.connect(
-            host=key.host,
-            user=key.user,
-            password=key.password,
-            database=key.database
+            host=os.environ['HOST'],
+            user=os.environ['USER'],
+            password=os.environ['PASSWORD'],
+            database=os.environ['DATABASE']
         )
     
     cur = conn.cursor()
