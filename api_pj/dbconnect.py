@@ -2,7 +2,7 @@ import psycopg2
 import os
 
 def DBConnect():
-
+    print('DBConnect')
     conn = psycopg2.connect(
             host=os.environ.get('HOST'),
             user=os.environ.get('USER'),
