@@ -2,8 +2,9 @@ import requests
 import json
  
 # URLを設定
-url = 'https://hackathonrunner-analysis-api.herokuapp.com/hr-api/'
-#url = 'http://localhost:8000/hr-api/'
+url = 'https://hackathonrunner-analysis-api.azurewebsites.net/api/hello?code=IthH2RAQ_z3DRtzglmAVSnPPI5p8NER2vJFZN3ucy0NpAzFuzYtrmw%3D%3D'
+
+# その他マスターキーが必要な場合もある
 # 送信データ
 prm = {
         'hackathon':        0,
